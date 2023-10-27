@@ -1,0 +1,2491 @@
+package com.TssLtd.AiFaceAttendanceMonitor;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.icu.text.RelativeDateTimeFormatter;
+import android.os.Bundle;
+
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.Html;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.app.AlertDialog;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.text.InputType;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.text.HtmlCompat;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+public class Automation extends AppCompatActivity {
+
+  private SharedPreferences sharedPreferences;
+  private static final String MyPREFERENCES = "MyPrefs";
+  private static final String SentEmailEvery = "sentEmailEveryKey";
+  TextView  startTimeTextView,startTimeTextView2,startTimeTextView3,startTimeTextView4,startTimeTextView5,startTime2TextView,startTime2TextView2,startTime2TextView3,startTime2TextView4,
+    startTime2TextView5,summaryAtend1,summaryAtend2,summaryAtend3,summaryAtend4,summaryAtend5,autoInfomonday;
+  Button editStartTime,editStartTime2,editStartTime3,editStartTime4,editStartTime5,editEndTime,editEndTime2,editEndTime3,editEndTime4,editEndTime5;
+  CheckBox enableCheckBox,enableCheckBox2,enableCheckBox3,enableCheckBox4,enableCheckBox5, disabledCheckBox,disabledCheckBox2,disabledCheckBox3,disabledCheckBox4,disabledCheckBox5;
+   String futurendTime1,futurendTime2,futurendTime3,futurendTime4,futurendTime5,updatedSelectedTime1,updatedSelectedTime2,updatedSelectedTime3,updatedSelectedTime4,updatedSelectedTime5, timeDifference1,timeDifference2,timeDifference3,timeDifference4,timeDifference5;
+  AppCompatButton buttonCancel,buttonSaveChange,buttonApplyChange;
+
+  private AlertDialog exitConfirmationDialog;
+
+  String whichDay="whichDay";
+
+   @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_automation);
+
+    enableCheckBox = findViewById(R.id.enableCheckBox);
+    enableCheckBox2 = findViewById(R.id.enableCheckBox2);
+    enableCheckBox3 = findViewById(R.id.enableCheckBox3);
+    enableCheckBox4 = findViewById(R.id.enableCheckBox4);
+    enableCheckBox5 = findViewById(R.id.enableCheckBox5);
+
+
+     editStartTime = findViewById(R.id.editEndTimeButton);
+     editStartTime2 = findViewById(R.id.editEndTimeButton2);
+     editStartTime3 = findViewById(R.id.editEndTimeButton3);
+     editStartTime4 = findViewById(R.id.editEndTimeButton4);
+     editStartTime5 = findViewById(R.id.editEndTimeButton5);
+
+         editEndTime = findViewById(R.id.editEndTime2Button);
+        editEndTime2 = findViewById(R.id.editEndTime2Button2);
+        editEndTime3 = findViewById(R.id.editEndTime2Button3);
+      editEndTime4 = findViewById(R.id.editEndTime2Button4);
+      editEndTime5 = findViewById(R.id.editEndTime2Button5);
+
+
+    disabledCheckBox = findViewById(R.id.disabledCheckBox);
+    disabledCheckBox2 = findViewById(R.id.disabledCheckBox2);
+    disabledCheckBox3 = findViewById(R.id.disabledCheckBox3);
+    disabledCheckBox4 = findViewById(R.id.disabledCheckBox4);
+    disabledCheckBox5 = findViewById(R.id.disabledCheckBox5);
+     buttonCancel = findViewById(R.id.buttonCancel);
+    buttonSaveChange = findViewById(R.id.buttonSaveChange);
+     buttonApplyChange = findViewById(R.id.buttonApplyChange);
+
+
+    // Retrieve value from SharedPreferences
+    SharedPreferences sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+    int selectedNumber = sharedPreferences.getInt("selectedNumber", 0);
+
+// Set the value to the TextView
+    TextView textViewSentEmailEvery = findViewById(R.id.textViewSentEmailEvery);
+    textViewSentEmailEvery.setText("Sent email every " + selectedNumber + " Date Of each Month");
+
+
+    sharedPreferences = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE);
+
+    // Set click listeners for each "Edit" button
+    Button editIoTVitals = findViewById(R.id.editIoTVitals);
+    editIoTVitals.setOnClickListener(v -> {
+      TextView textViewIoTVitals = findViewById(R.id.textViewIoTVitals);
+      showInputDialog(textViewIoTVitals, "IoT vitals", "ioT_vitals_key");
+    });
+
+    Button editSenderEmail = findViewById(R.id.editSenderEmail);
+    editSenderEmail.setOnClickListener(v -> {
+      TextView textViewSenderEmail = findViewById(R.id.textViewSenderEmail);
+      showInputDialog(textViewSenderEmail, "Sender’s email", "sender_email_key");
+    });
+
+    Button editSenderPassword = findViewById(R.id.editSenderPassword);
+    editSenderPassword.setOnClickListener(v -> {
+      TextView textViewSenderPassword = findViewById(R.id.textViewSenderPassword);
+      showInputDialog(textViewSenderPassword, "Sender’s password", "sender_password_key");
+    });
+
+    Button editSenderPhoneNumber = findViewById(R.id.editSenderPhoneNumber);
+    editSenderPhoneNumber.setOnClickListener(v -> {
+      TextView textViewSenderPhoneNumber = findViewById(R.id.textViewSenderPhoneNumber);
+      showInputDialog(textViewSenderPhoneNumber, "Sender’s phone number", "sender_phone_number_key");
+    });
+
+
+    startTimeTextView = findViewById(R.id.startTimeTextView);
+    startTimeTextView2 = findViewById(R.id.startTimeTextView2);
+    startTimeTextView3 = findViewById(R.id.startTimeTextView3);
+    startTimeTextView4 = findViewById(R.id.startTimeTextView4);
+    startTimeTextView5 = findViewById(R.id.startTimeTextView5);
+
+
+    startTime2TextView = findViewById(R.id.startTime2TextView);
+    startTime2TextView2 = findViewById(R.id.startTime2TextView2);
+    startTime2TextView3 = findViewById(R.id.startTime2TextView3);
+    startTime2TextView4 = findViewById(R.id.startTime2TextView4);
+    startTime2TextView5 = findViewById(R.id.startTime2TextView5);
+
+
+    summaryAtend1= findViewById(R.id.summaryAtend1);
+    summaryAtend2= findViewById(R.id.summaryAtend2);
+    summaryAtend3= findViewById(R.id.summaryAtend3);
+    summaryAtend4= findViewById(R.id.summaryAtend4);
+    summaryAtend5= findViewById(R.id.summaryAtend5);
+     autoInfomonday = findViewById(R.id. autoInfomonday);
+
+
+    Button editSentEmailEvery = findViewById(R.id.editSentEmailEvery);
+
+
+
+
+
+    SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck1", Context.MODE_PRIVATE);
+
+     SharedPreferences sharedPreferencesCheck2 = getSharedPreferences("MyPrefcheck2", Context.MODE_PRIVATE);
+     SharedPreferences sharedPreferencesCheck3 = getSharedPreferences("MyPrefcheck3", Context.MODE_PRIVATE);
+
+     SharedPreferences sharedPreferencesCheck4 = getSharedPreferences("MyPrefcheck4", Context.MODE_PRIVATE);
+
+     SharedPreferences sharedPreferencesCheck5 = getSharedPreferences("MyPrefcheck5", Context.MODE_PRIVATE);
+
+// Check for the saved status elsewhere
+
+
+    SharedPreferences finalSharedPreferences = sharedPreferences;
+    editSentEmailEvery.setOnClickListener(v -> {
+      // Show spinner dialog with numbers from 1 to 28
+      AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setTitle("Select a number");
+
+      // Create a spinner and set the adapter
+      Spinner spinner = new Spinner(this);
+      List<String> numbersList = new ArrayList<>();
+      for (int i = 1; i <= 28; i++) {
+        numbersList.add(String.valueOf(i));
+      }
+      ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, numbersList);
+      adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      spinner.setAdapter(adapter);
+      builder.setView(spinner);
+
+      // Set the selected number in shared preferences and display in TextView
+      builder.setPositiveButton("OK", (dialog, which) -> {
+        int selectedNumberx = Integer.parseInt(spinner.getSelectedItem().toString());
+        SharedPreferences.Editor editor = finalSharedPreferences.edit();
+        editor.putInt("selectedNumber", selectedNumberx);
+        editor.apply();
+
+        TextView textViewSentEmailEveryx = findViewById(R.id.textViewSentEmailEvery);
+        textViewSentEmailEveryx.setText("Sent email every " + selectedNumber+ "Date Of each Month");
+      });
+
+      builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+      builder.show();
+    });
+
+
+
+    SharedPreferences.Editor editor = sharedPreferencesCheck.edit();
+
+    disabledCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+          enableCheckBox.setChecked(false); // Uncheck the enable checkbox
+          showToast("Disabled");
+          summaryAtend1.setText("Mondays Attend 1 disabled ");
+          summaryAtend1.setTextColor(Color.RED);
+
+          // Save status in SharedPreferences
+          editor.putBoolean("disabledStatus1", true);
+          editor.putBoolean("enabledStatus1", false);
+          editor.apply();
+        } else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+          editor.remove("disabledStatus1");
+          editor.apply();
+          enableCheckBox.setChecked(true);
+        }
+      }
+    });
+
+
+
+    SharedPreferences.Editor editor2 = sharedPreferencesCheck2.edit();
+    disabledCheckBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+          enableCheckBox2.setChecked(false); // Uncheck the enable checkbox
+          showToast("Disabled");
+          summaryAtend2.setText("Mondays Attend 1 disabled ");
+          summaryAtend2.setTextColor(Color.RED);
+
+          // Save status in SharedPreferences
+          editor2.putBoolean("disabledStatus2", true);
+          editor2.putBoolean("enabledStatus2", false);
+          editor2.apply();
+        } else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+
+          SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck1", Context.MODE_PRIVATE);
+          boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus1", true);
+          if (isDisabled) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Automation.this);
+            alertDialogBuilder.setMessage("Please Enable the first attendance first ");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+              }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+          }else{
+
+          editor2.remove("disabledStatus2");
+          editor2.apply();
+          enableCheckBox2.setChecked(true);
+        }
+        }
+      }
+    });
+
+
+    SharedPreferences.Editor editor3 = sharedPreferencesCheck3.edit();
+    disabledCheckBox3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+          enableCheckBox3.setChecked(false); // Uncheck the enable checkbox
+          showToast("Disabled");
+          summaryAtend3.setText("Mondays Attend 1 disabled ");
+          summaryAtend3.setTextColor(Color.RED);
+
+          // Save status in SharedPreferences
+          editor3.putBoolean("disabledStatus3", true);
+          editor3.putBoolean("enabledStatus3", false);
+          editor3.apply();
+        } else {
+          SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck2", Context.MODE_PRIVATE);
+          boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus2", true);
+          if (isDisabled) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Automation.this);
+            alertDialogBuilder.setMessage("Please Enable the second attendance first ");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+              }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+          }else{
+
+          editor3.remove("disabledStatus3");
+          editor3.apply();
+          enableCheckBox3.setChecked(true);
+        }}
+      }
+    });
+
+
+    SharedPreferences.Editor editor4 = sharedPreferencesCheck4.edit();
+    disabledCheckBox4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+          enableCheckBox4.setChecked(false); // Uncheck the enable checkbox
+          showToast("Disabled");
+          summaryAtend4.setText("Mondays Attend 1 disabled ");
+          summaryAtend4.setTextColor(Color.RED);
+
+          // Save status in SharedPreferences
+          editor4.putBoolean("disabledStatus4", true);
+          editor4.putBoolean("enabledStatus4", false);
+          editor4.apply();
+        } else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+
+          SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck3", Context.MODE_PRIVATE);
+          boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus3", true);
+          if (isDisabled) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Automation.this);
+            alertDialogBuilder.setMessage("Please Enable the Third attendance first ");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+              }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+          }else {
+            editor4.remove("disabledStatus4");
+            editor4.apply();
+            enableCheckBox4.setChecked(true);
+          }
+        }
+      }
+    });
+
+
+    SharedPreferences.Editor editor5 = sharedPreferencesCheck5.edit();
+    disabledCheckBox5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+          enableCheckBox5.setChecked(false); // Uncheck the enable checkbox
+          showToast("Disabled");
+          summaryAtend5.setText("Mondays Attend 1 disabled ");
+          summaryAtend5.setTextColor(Color.RED);
+
+          // Save status in SharedPreferences
+          editor5.putBoolean("disabledStatus5", true);
+          editor5.putBoolean("enabledStatus5", false);
+          editor5.apply();
+        } else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+
+          SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck4", Context.MODE_PRIVATE);
+          boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus4", true);
+          if (isDisabled) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Automation.this);
+            alertDialogBuilder.setMessage("Please Enable the fourth attendance first ");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+              }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+          }else {
+          editor5.remove("disabledStatus5");
+          editor5.apply();
+          enableCheckBox5.setChecked(true);
+        }}
+      }
+    });
+
+    enableCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+
+            disabledCheckBox.setChecked(false); // Uncheck the disabled checkbox
+            showToast("Enabled");
+            summaryAtend1.setText("Select Automation Timing ");
+            summaryAtend1.setTextColor(Color.BLACK);
+
+            // Save status in SharedPreferences
+            editor.putBoolean("disabledStatus1", false);
+            editor.putBoolean("enabledStatus1", true);
+            editor.apply();
+
+
+        } else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+          editor.remove("enabledStatus1");
+          editor.apply();
+          disabledCheckBox.setChecked(true);
+        }
+      }
+    });
+
+
+    enableCheckBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+
+
+          SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck1", Context.MODE_PRIVATE);
+          boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus1", true);
+          if (isDisabled) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Automation.this);
+            alertDialogBuilder.setMessage("Please Enable the first attendance first ");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+              }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+
+            enableCheckBox2.setChecked(false);
+            disabledCheckBox2.setChecked(true);
+
+          }else {
+          disabledCheckBox2.setChecked(false); // Uncheck the disabled checkbox
+          showToast("Enabled");
+          summaryAtend2.setText("Select Automation Timing ");
+          summaryAtend2.setTextColor(Color.BLACK);
+
+          // Save status in SharedPreferences
+          editor2.putBoolean("disabledStatus2", false);
+          editor2.putBoolean("enabledStatus2", true);
+          editor2.apply();
+        } }else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+          editor2.remove("enabledStatus2");
+          editor2.apply();
+          disabledCheckBox2.setChecked(true);
+        }
+      }
+    });
+
+
+    enableCheckBox3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+
+          SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck2", Context.MODE_PRIVATE);
+          boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus2", true);
+          if (isDisabled) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Automation.this);
+            alertDialogBuilder.setMessage("Please Enable the Second attendance first ");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+              }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+
+            enableCheckBox3.setChecked(false);
+            disabledCheckBox3.setChecked(true);
+
+          }else {
+
+
+
+          disabledCheckBox3.setChecked(false); // Uncheck the disabled checkbox
+          showToast("Enabled");
+          summaryAtend3.setText("Select Automation Timing ");
+          summaryAtend3.setTextColor(Color.BLACK);
+
+          // Save status in SharedPreferences
+          editor3.putBoolean("disabledStatus3", false);
+          editor3.putBoolean("enabledStatus3", true);
+          editor3.apply();
+        } }else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+          editor3.remove("enabledStatus3");
+          editor3.apply();
+          disabledCheckBox3.setChecked(true);
+        }
+      }
+    });
+
+
+    enableCheckBox4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+
+
+          SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck3", Context.MODE_PRIVATE);
+          boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus3", true);
+          if (isDisabled) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Automation.this);
+            alertDialogBuilder.setMessage("Please Enable the Third attendance first ");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                enableCheckBox4.setChecked(false);
+                disabledCheckBox4.setChecked(true);
+              }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+
+
+
+
+          }else {
+          disabledCheckBox4.setChecked(false); // Uncheck the disabled checkbox
+          showToast("Enabled");
+          summaryAtend4.setText("Select Automation Timing ");
+          summaryAtend4.setTextColor(Color.BLACK);
+
+          editor4.putBoolean("disabledStatus4", false);
+          editor4.putBoolean("enabledStatus4", true);
+          editor4.apply();
+        } }else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+          editor4.remove("enabledStatus4");
+          editor4.apply();
+          disabledCheckBox4.setChecked(true);
+        }
+      }
+    });
+
+
+    enableCheckBox5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+
+
+          SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck4", Context.MODE_PRIVATE);
+          boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus4", true);
+          if (isDisabled) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Automation.this);
+            alertDialogBuilder.setMessage("Please Enable the fourth attendance first ");
+            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+              }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+            enableCheckBox5.setChecked(false);
+            disabledCheckBox5.setChecked(true);
+
+          }else {
+
+
+            disabledCheckBox5.setChecked(false); // Uncheck the disabled checkbox
+            showToast("Enabled");
+            summaryAtend5.setText("Select Automation Timing ");
+            summaryAtend5.setTextColor(Color.BLACK);
+
+            editor5.putBoolean("disabledStatus5", false);
+            editor5.putBoolean("enabledStatus5", true);
+            editor5.apply();
+
+          }
+
+        } else {
+          // If the checkbox is unchecked, remove the status from SharedPreferences
+          editor5.remove("enabledStatus5");
+          editor5.apply();
+          disabledCheckBox5.setChecked(true);
+        }
+      }
+    });
+
+
+
+    buttonCancel.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        if (!whichDay.contains("Monday")) {
+
+          String dynamicMessage = "There are no active changes applied to Monday. No further action is required.";
+          showAlert(dynamicMessage);
+
+
+        } else{
+
+          whichDay="whichDay";
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(Automation.this);
+            builder.setTitle("Discard Changes ? ");
+            builder.setMessage("Do you want to discard the changes you applied on Mondays' automations?");
+
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+                SharedPreferences sharedPreferences1 = getSharedPreferences("Myprefst1", Context.MODE_PRIVATE);
+                String stTime1 = sharedPreferences1.getString("stTime1", "default_value");
+                startTimeTextView.setText(stTime1);
+
+                SharedPreferences sharedPreferences2 = getSharedPreferences("Myprefst2", Context.MODE_PRIVATE);
+                String stTime2 = sharedPreferences2.getString("stTime2", "default_value");
+                startTimeTextView2.setText(stTime2);
+
+                SharedPreferences sharedPreferences3 = getSharedPreferences("Myprefst3", Context.MODE_PRIVATE);
+                String stTime3 = sharedPreferences3.getString("stTime3", "default_value");
+                startTimeTextView3.setText(stTime3);
+
+                SharedPreferences sharedPreferences4 = getSharedPreferences("Myprefst4", Context.MODE_PRIVATE);
+                String stTime4 = sharedPreferences4.getString("stTime4", "default_value");
+                startTimeTextView4.setText(stTime4);
+
+                SharedPreferences sharedPreferences5 = getSharedPreferences("Myprefst5", Context.MODE_PRIVATE);
+                String stTime5 = sharedPreferences5.getString("stTime5", "default_value");
+                startTimeTextView5.setText(stTime5);
+
+                // Retrieve the strings from SharedPreferences and set them to the corresponding TextViews
+                SharedPreferences sharedPreferencesend = getSharedPreferences("MyPrefEnd1", Context.MODE_PRIVATE);
+                String SavedupdatedSelectedTime1 = sharedPreferencesend.getString("updatedSelectedTime1", "default_value");
+
+
+                startTime2TextView.setText(SavedupdatedSelectedTime1);
+                updatedSelectedTime1 =SavedupdatedSelectedTime1;
+
+                SharedPreferences sharedPreferencesend2 = getSharedPreferences("MyPrefEnd2", Context.MODE_PRIVATE);
+                String SavedupdatedSelectedTime2 = sharedPreferencesend2.getString("updatedSelectedTime2", "default_value");
+                startTime2TextView2.setText(SavedupdatedSelectedTime2);
+                updatedSelectedTime2=SavedupdatedSelectedTime2;
+
+                SharedPreferences sharedPreferencesend3 = getSharedPreferences("MyPrefEnd3", Context.MODE_PRIVATE);
+                String SavedupdatedSelectedTime3 = sharedPreferencesend3.getString("updatedSelectedTime3", "default_value");
+                startTime2TextView3.setText(SavedupdatedSelectedTime3);
+                updatedSelectedTime3=SavedupdatedSelectedTime3;
+
+                SharedPreferences sharedPreferencesend4 = getSharedPreferences("MyPrefEnd4", Context.MODE_PRIVATE);
+                String SavedupdatedSelectedTime4 = sharedPreferencesend4.getString("updatedSelectedTime4", "default_value");
+                startTime2TextView4.setText(SavedupdatedSelectedTime4);
+                updatedSelectedTime4=SavedupdatedSelectedTime4;
+
+                SharedPreferences sharedPreferencesend5 = getSharedPreferences("MyPrefEnd5", Context.MODE_PRIVATE);
+                String SavedupdatedSelectedTime5 = sharedPreferencesend5.getString("updatedSelectedTime5", "default_value");
+                startTime2TextView5.setText(SavedupdatedSelectedTime5);
+                updatedSelectedTime5=SavedupdatedSelectedTime5;
+
+
+
+
+                SharedPreferences sharedPreferencesendinf = getSharedPreferences("MyPrefEndinfo1", Context.MODE_PRIVATE);
+                String updatedSelectedinfo1 = sharedPreferencesendinf.getString("updatedSelectedinfo1", "default_value");
+
+
+                SharedPreferences sharedPreferencesendinf2 = getSharedPreferences("MyPrefEndinfo2", Context.MODE_PRIVATE);
+                String updatedSelectedinfo2 = sharedPreferencesendinf2.getString("updatedSelectedinfo2", "default_value");
+
+
+
+                SharedPreferences sharedPreferencesendinf3 = getSharedPreferences("MyPrefEndinfo3", Context.MODE_PRIVATE);
+                String updatedSelectedinfo3 = sharedPreferencesendinf3.getString("updatedSelectedinfo3", "default_value");
+
+
+                SharedPreferences sharedPreferencesendinf4 = getSharedPreferences("MyPrefEndinfo4", Context.MODE_PRIVATE);
+                String updatedSelectedinfo4 = sharedPreferencesendinf4.getString("updatedSelectedinfo4", "default_value");
+
+
+                SharedPreferences sharedPreferencesendinf5 = getSharedPreferences("MyPrefEndinfo5", Context.MODE_PRIVATE);
+                String updatedSelectedinfo5 = sharedPreferencesendinf5.getString("updatedSelectedinfo5", "default_value");
+
+
+
+                SharedPreferences sharedPreferencesdif = getSharedPreferences("Prefdif1", MODE_PRIVATE);
+                String savedTimeDifference1 = sharedPreferencesdif.getString("timeDifference1", "");
+
+                SharedPreferences sharedPreferencesdif2 = getSharedPreferences("Prefdif2", MODE_PRIVATE);
+                String savedTimeDifference2 = sharedPreferencesdif2.getString("timeDifference2", "");
+
+                SharedPreferences sharedPreferencesdif3 = getSharedPreferences("Prefdif3", MODE_PRIVATE);
+                String savedTimeDifference3 = sharedPreferencesdif3.getString("timeDifference3", "");
+
+                SharedPreferences sharedPreferencesdif4 = getSharedPreferences("Prefdif4", MODE_PRIVATE);
+                String savedTimeDifference4 = sharedPreferencesdif4.getString("timeDifference4", "");
+
+                SharedPreferences sharedPreferencesdif5 = getSharedPreferences("Prefdif5", MODE_PRIVATE);
+                String savedTimeDifference5 = sharedPreferencesdif5.getString("timeDifference5", "");
+
+
+                boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus1", true);
+                if (isDisabled) {
+
+                  summaryAtend1.setText("Mondays Attendance 1 disabled ");
+                  summaryAtend1.setTextColor(Color.RED);
+                  disabledCheckBox.setChecked(true);
+                  enableCheckBox.setChecked(false);
+
+                } else {
+
+                  if (updatedSelectedinfo1.contains("default_v"))  {
+                    summaryAtend1.setText("Mondays Attendance 1 disabled ");
+                    summaryAtend1.setTextColor(Color.RED);
+                    disabledCheckBox.setChecked(true);
+                    enableCheckBox.setChecked(false);
+                  }else {
+                    enableCheckBox.setChecked(true);
+                    String message = "Attendance 1 is currently enabled for Mondays. It will remain active for "
+                      + savedTimeDifference1 + " minutes. The session is scheduled to conclude at: "
+                      + updatedSelectedinfo1 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+                      + SavedupdatedSelectedTime1 + ".";
+
+                    summaryAtend1.setText(message);
+                    ///////sssssss
+                    disabledCheckBox.setChecked(false);
+                  }
+
+                }
+
+
+
+// Check for the saved status elsewhere
+                boolean isDisabled2 = sharedPreferencesCheck2.getBoolean("disabledStatus2", true);
+                if (isDisabled2) {
+
+                  summaryAtend2.setText("Mondays Attendance 2 disabled ");
+                  summaryAtend2.setTextColor(Color.RED);
+                  disabledCheckBox2.setChecked(true);
+                  enableCheckBox2.setChecked(false);
+
+                }else {
+
+
+                  if (updatedSelectedinfo2.contains("default_v"))  {
+                    summaryAtend2.setText("Mondays Attendance 2 disabled ");
+                    summaryAtend2.setTextColor(Color.RED);
+                    disabledCheckBox2.setChecked(true);
+                    enableCheckBox2.setChecked(false);
+                  }else {
+                    enableCheckBox2.setChecked(true);
+                    String message = "Attendance 2 is currently enabled for Mondays. It will remain active for "
+                      + savedTimeDifference2 + " minutes. The session is scheduled to conclude at: "
+                      + updatedSelectedinfo2 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+                      + SavedupdatedSelectedTime2 + ".";
+
+                    summaryAtend2.setText(message);
+                    disabledCheckBox2.setChecked(false);
+
+                  }}
+
+
+
+
+
+// Check for the saved status elsewhere
+                boolean isDisabled3 = sharedPreferencesCheck3.getBoolean("disabledStatus3", true);
+                if (isDisabled3) {
+
+                  summaryAtend3.setText("Mondays Attend 3 disabled ");
+                  summaryAtend3.setTextColor(Color.RED);
+                  disabledCheckBox3.setChecked(true);
+                  enableCheckBox3.setChecked(false);
+
+                }else {
+
+                  if (updatedSelectedinfo3.contains("default_v"))  {
+                    summaryAtend3.setText("Mondays Attendance 3 disabled ");
+                    summaryAtend3.setTextColor(Color.RED);
+                    disabledCheckBox3.setChecked(true);
+                    enableCheckBox3.setChecked(false);
+                  }else {
+
+
+
+
+                    enableCheckBox3.setChecked(true);
+                    String message = "Attendance 3 is currently enabled for Mondays. It will remain active for "
+                      + savedTimeDifference3 + " minutes. The session is scheduled to conclude at: "
+                      + updatedSelectedinfo3 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+                      + SavedupdatedSelectedTime3 + ".";
+
+                    summaryAtend3.setText(message);
+                    disabledCheckBox3.setChecked(false);
+
+                  }}
+
+
+
+                boolean isDisabled4 = sharedPreferencesCheck4.getBoolean("disabledStatus4", true);
+                if (isDisabled4) {
+
+                  summaryAtend4.setText("Mondays Attend 4 disabled ");
+                  summaryAtend4.setTextColor(Color.RED);
+
+                  disabledCheckBox4.setChecked(true);
+                  enableCheckBox4.setChecked(false);
+
+                }else {
+
+
+                  if (updatedSelectedinfo4.contains("default_v"))  {
+                    summaryAtend4.setText("Mondays Attendance 4 disabled ");
+                    summaryAtend4.setTextColor(Color.RED);
+                    disabledCheckBox4.setChecked(true);
+                    enableCheckBox4.setChecked(false);
+                  }else {
+
+
+                    enableCheckBox4.setChecked(true);
+                    String message = "Attendance 4 is currently enabled for Mondays. It will remain active for "
+                      + savedTimeDifference4 + " minutes. The session is scheduled to conclude at: "
+                      + updatedSelectedinfo4 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+                      + SavedupdatedSelectedTime4 + ".";
+
+                    summaryAtend4.setText(message);
+                    disabledCheckBox4.setChecked(false);
+
+                  }}
+
+
+
+                boolean isDisabled5 = sharedPreferencesCheck5.getBoolean("disabledStatus5", true);
+                if (isDisabled5) {
+
+                  summaryAtend5.setText("Mondays Attend 5 disabled ");
+                  summaryAtend5.setTextColor(Color.RED);
+                  disabledCheckBox5.setChecked(true);
+                  enableCheckBox5.setChecked(false);
+
+                }else {
+
+                  if (updatedSelectedinfo5.contains("default_v"))  {
+                    summaryAtend5.setText("Mondays Attendance 5 disabled ");
+                    summaryAtend5.setTextColor(Color.RED);
+                    disabledCheckBox5.setChecked(true);
+                    enableCheckBox5.setChecked(false);
+                  }else {
+
+
+
+
+                    enableCheckBox5.setChecked(true);
+                    String message = "Attendance 5 is currently enabled for Mondays. It will remain active for "
+                      + savedTimeDifference5 + " minutes. The session is scheduled to conclude at: "
+                      + updatedSelectedinfo5 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+                      + SavedupdatedSelectedTime5 + ".";
+
+
+                    summaryAtend5.setText(message);
+                    disabledCheckBox.setChecked(false);
+
+                  }}
+
+
+
+
+              }
+            });
+
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(Automation.this);
+                builder.setTitle("Allowed To ....");
+                builder.setMessage("Continue applying and finalizing logical changes.");
+
+                // Add the OK button
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    // Perform OK button action here
+                  }
+                });
+
+                final AlertDialog dialog22 = builder.create();
+                dialog22.show();
+
+                new Handler().postDelayed(new Runnable() {
+                  @Override
+                  public void run() {
+                    dialog22.dismiss();
+                  }
+                }, 7000);
+                }
+
+
+            });
+
+            // Create and show the AlertDialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+
+
+        }
+
+
+
+
+        //  showToast("Cancel button clicked");
+
+
+      }
+    });
+
+    buttonSaveChange.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+      //  showToast("Save Change button clicked");
+        if (whichDay.contains("Monday")) {
+          compareMondaySettings();
+        }else {
+
+          String dynamicMessage = "There are no active changes applied to Monday. No further action is required.";
+          showAlert(dynamicMessage);
+
+        }
+
+      }
+    });
+
+    buttonApplyChange.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        if (whichDay.contains("Monday")) {
+          compareMondaySettings();
+        }else {
+
+          String dynamicMessage = "There are no active changes applied to Monday. No further action is required.";
+          showAlert(dynamicMessage);
+
+        }
+
+
+      }
+    });
+
+
+
+     SharedPreferences sharedPreferences1 = getSharedPreferences("Myprefst1", Context.MODE_PRIVATE);
+     String stTime1 = sharedPreferences1.getString("stTime1", "default_value");
+     startTimeTextView.setText(stTime1);
+
+     SharedPreferences sharedPreferences2 = getSharedPreferences("Myprefst2", Context.MODE_PRIVATE);
+     String stTime2 = sharedPreferences2.getString("stTime2", "default_value");
+     startTimeTextView2.setText(stTime2);
+
+     SharedPreferences sharedPreferences3 = getSharedPreferences("Myprefst3", Context.MODE_PRIVATE);
+     String stTime3 = sharedPreferences3.getString("stTime3", "default_value");
+     startTimeTextView3.setText(stTime3);
+
+     SharedPreferences sharedPreferences4 = getSharedPreferences("Myprefst4", Context.MODE_PRIVATE);
+     String stTime4 = sharedPreferences4.getString("stTime4", "default_value");
+     startTimeTextView4.setText(stTime4);
+
+     SharedPreferences sharedPreferences5 = getSharedPreferences("Myprefst5", Context.MODE_PRIVATE);
+     String stTime5 = sharedPreferences5.getString("stTime5", "default_value");
+     startTimeTextView5.setText(stTime5);
+
+     // Retrieve the strings from SharedPreferences and set them to the corresponding TextViews
+     SharedPreferences sharedPreferencesend = getSharedPreferences("MyPrefEnd1", Context.MODE_PRIVATE);
+     String SavedupdatedSelectedTime1 = sharedPreferencesend.getString("updatedSelectedTime1", "default_value");
+
+
+     startTime2TextView.setText(SavedupdatedSelectedTime1);
+     updatedSelectedTime1 =SavedupdatedSelectedTime1;
+
+     SharedPreferences sharedPreferencesend2 = getSharedPreferences("MyPrefEnd2", Context.MODE_PRIVATE);
+     String SavedupdatedSelectedTime2 = sharedPreferencesend2.getString("updatedSelectedTime2", "default_value");
+     startTime2TextView2.setText(SavedupdatedSelectedTime2);
+     updatedSelectedTime2=SavedupdatedSelectedTime2;
+
+     SharedPreferences sharedPreferencesend3 = getSharedPreferences("MyPrefEnd3", Context.MODE_PRIVATE);
+     String SavedupdatedSelectedTime3 = sharedPreferencesend3.getString("updatedSelectedTime3", "default_value");
+     startTime2TextView3.setText(SavedupdatedSelectedTime3);
+     updatedSelectedTime3=SavedupdatedSelectedTime3;
+
+     SharedPreferences sharedPreferencesend4 = getSharedPreferences("MyPrefEnd4", Context.MODE_PRIVATE);
+     String SavedupdatedSelectedTime4 = sharedPreferencesend4.getString("updatedSelectedTime4", "default_value");
+     startTime2TextView4.setText(SavedupdatedSelectedTime4);
+     updatedSelectedTime4=SavedupdatedSelectedTime4;
+
+     SharedPreferences sharedPreferencesend5 = getSharedPreferences("MyPrefEnd5", Context.MODE_PRIVATE);
+     String SavedupdatedSelectedTime5 = sharedPreferencesend5.getString("updatedSelectedTime5", "default_value");
+     startTime2TextView5.setText(SavedupdatedSelectedTime5);
+     updatedSelectedTime5=SavedupdatedSelectedTime5;
+
+
+
+
+
+
+     SharedPreferences sharedPreferencesendinf = getSharedPreferences("MyPrefEndinfo1", Context.MODE_PRIVATE);
+     String updatedSelectedinfo1 = sharedPreferencesendinf.getString("updatedSelectedinfo1", "default_value");
+
+
+     SharedPreferences sharedPreferencesendinf2 = getSharedPreferences("MyPrefEndinfo2", Context.MODE_PRIVATE);
+     String updatedSelectedinfo2 = sharedPreferencesendinf2.getString("updatedSelectedinfo2", "default_value");
+
+
+
+     SharedPreferences sharedPreferencesendinf3 = getSharedPreferences("MyPrefEndinfo3", Context.MODE_PRIVATE);
+     String updatedSelectedinfo3 = sharedPreferencesendinf3.getString("updatedSelectedinfo3", "default_value");
+
+
+     SharedPreferences sharedPreferencesendinf4 = getSharedPreferences("MyPrefEndinfo4", Context.MODE_PRIVATE);
+     String updatedSelectedinfo4 = sharedPreferencesendinf4.getString("updatedSelectedinfo4", "default_value");
+
+
+     SharedPreferences sharedPreferencesendinf5 = getSharedPreferences("MyPrefEndinfo5", Context.MODE_PRIVATE);
+     String updatedSelectedinfo5 = sharedPreferencesendinf5.getString("updatedSelectedinfo5", "default_value");
+
+
+
+
+
+
+     SharedPreferences sharedPreferencesdif = getSharedPreferences("Prefdif1", MODE_PRIVATE);
+     String savedTimeDifference1 = sharedPreferencesdif.getString("timeDifference1", "");
+
+     SharedPreferences sharedPreferencesdif2 = getSharedPreferences("Prefdif2", MODE_PRIVATE);
+     String savedTimeDifference2 = sharedPreferencesdif2.getString("timeDifference2", "");
+
+     SharedPreferences sharedPreferencesdif3 = getSharedPreferences("Prefdif3", MODE_PRIVATE);
+     String savedTimeDifference3 = sharedPreferencesdif3.getString("timeDifference3", "");
+
+     SharedPreferences sharedPreferencesdif4 = getSharedPreferences("Prefdif4", MODE_PRIVATE);
+     String savedTimeDifference4 = sharedPreferencesdif4.getString("timeDifference4", "");
+
+     SharedPreferences sharedPreferencesdif5 = getSharedPreferences("Prefdif5", MODE_PRIVATE);
+     String savedTimeDifference5 = sharedPreferencesdif5.getString("timeDifference5", "");
+
+
+     boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus1", true);
+     if (isDisabled) {
+
+       summaryAtend1.setText("Mondays Attendance 1 disabled ");
+       summaryAtend1.setTextColor(Color.RED);
+       disabledCheckBox.setChecked(true);
+       enableCheckBox.setChecked(false);
+
+     } else {
+
+         if (updatedSelectedinfo1.contains("default_v"))  {
+           summaryAtend1.setText("Mondays Attendance 1 disabled ");
+           summaryAtend1.setTextColor(Color.RED);
+           disabledCheckBox.setChecked(true);
+           enableCheckBox.setChecked(false);
+         }else {
+           enableCheckBox.setChecked(true);
+           String message = "Attendance 1 is currently enabled for Mondays. It will remain active for "
+             + savedTimeDifference1 + " minutes. The session is scheduled to conclude at: "
+             + updatedSelectedinfo1 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+             + SavedupdatedSelectedTime1 + ".";
+
+           summaryAtend1.setText(message);
+           ///////sssssss
+           disabledCheckBox.setChecked(false);
+         }
+
+     }
+
+
+
+// Check for the saved status elsewhere
+     boolean isDisabled2 = sharedPreferencesCheck2.getBoolean("disabledStatus2", true);
+     if (isDisabled2) {
+
+       summaryAtend2.setText("Mondays Attendance 2 disabled ");
+       summaryAtend2.setTextColor(Color.RED);
+       disabledCheckBox2.setChecked(true);
+       enableCheckBox2.setChecked(false);
+
+     }else {
+
+
+       if (updatedSelectedinfo2.contains("default_v"))  {
+         summaryAtend2.setText("Mondays Attendance 2 disabled ");
+         summaryAtend2.setTextColor(Color.RED);
+         disabledCheckBox2.setChecked(true);
+         enableCheckBox2.setChecked(false);
+       }else {
+       enableCheckBox2.setChecked(true);
+       String message = "Attendance 2 is currently enabled for Mondays. It will remain active for "
+         + savedTimeDifference2 + " minutes. The session is scheduled to conclude at: "
+         + updatedSelectedinfo2 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+         + SavedupdatedSelectedTime2 + ".";
+
+       summaryAtend2.setText(message);
+       disabledCheckBox2.setChecked(false);
+
+     }}
+
+
+
+
+
+// Check for the saved status elsewhere
+     boolean isDisabled3 = sharedPreferencesCheck3.getBoolean("disabledStatus3", true);
+     if (isDisabled3) {
+
+       summaryAtend3.setText("Mondays Attend 3 disabled ");
+       summaryAtend3.setTextColor(Color.RED);
+       disabledCheckBox3.setChecked(true);
+       enableCheckBox3.setChecked(false);
+
+     }else {
+
+       if (updatedSelectedinfo3.contains("default_v"))  {
+         summaryAtend3.setText("Mondays Attendance 3 disabled ");
+         summaryAtend3.setTextColor(Color.RED);
+         disabledCheckBox3.setChecked(true);
+         enableCheckBox3.setChecked(false);
+       }else {
+
+
+
+
+       enableCheckBox3.setChecked(true);
+       String message = "Attendance 3 is currently enabled for Mondays. It will remain active for "
+         + savedTimeDifference3 + " minutes. The session is scheduled to conclude at: "
+         + updatedSelectedinfo3 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+         + SavedupdatedSelectedTime3 + ".";
+
+       summaryAtend3.setText(message);
+       disabledCheckBox3.setChecked(false);
+
+     }}
+
+
+
+     boolean isDisabled4 = sharedPreferencesCheck4.getBoolean("disabledStatus4", true);
+     if (isDisabled4) {
+
+       summaryAtend4.setText("Mondays Attend 4 disabled ");
+       summaryAtend4.setTextColor(Color.RED);
+
+       disabledCheckBox4.setChecked(true);
+       enableCheckBox4.setChecked(false);
+
+     }else {
+
+
+       if (updatedSelectedinfo4.contains("default_v"))  {
+         summaryAtend4.setText("Mondays Attendance 4 disabled ");
+         summaryAtend4.setTextColor(Color.RED);
+         disabledCheckBox4.setChecked(true);
+         enableCheckBox4.setChecked(false);
+       }else {
+
+
+         enableCheckBox4.setChecked(true);
+       String message = "Attendance 4 is currently enabled for Mondays. It will remain active for "
+         + savedTimeDifference4 + " minutes. The session is scheduled to conclude at: "
+         + updatedSelectedinfo4 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+         + SavedupdatedSelectedTime4 + ".";
+
+       summaryAtend4.setText(message);
+       disabledCheckBox4.setChecked(false);
+
+     }}
+
+
+
+     boolean isDisabled5 = sharedPreferencesCheck5.getBoolean("disabledStatus5", true);
+     if (isDisabled5) {
+
+       summaryAtend5.setText("Mondays Attend 5 disabled ");
+       summaryAtend5.setTextColor(Color.RED);
+       disabledCheckBox5.setChecked(true);
+       enableCheckBox5.setChecked(false);
+
+     }else {
+
+       if (updatedSelectedinfo5.contains("default_v"))  {
+         summaryAtend5.setText("Mondays Attendance 5 disabled ");
+         summaryAtend5.setTextColor(Color.RED);
+         disabledCheckBox5.setChecked(true);
+         enableCheckBox5.setChecked(false);
+       }else {
+
+
+
+
+         enableCheckBox5.setChecked(true);
+       String message = "Attendance 5 is currently enabled for Mondays. It will remain active for "
+         + savedTimeDifference5 + " minutes. The session is scheduled to conclude at: "
+         + updatedSelectedinfo5 + ". Utilizing the extra ten minutes, we will send SMS notifications to absent members. Expected completion time: "
+         + SavedupdatedSelectedTime5 + ".";
+         summaryAtend5.setText(message);
+         disabledCheckBox.setChecked(false);
+
+     }}
+
+   }
+
+
+  private void showInputDialog(TextView textView, String title, String key) {
+    SharedPreferences sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE); // Initialize SharedPreferences
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle(title);
+
+    final EditText input = new EditText(this);
+    input.setInputType(InputType.TYPE_CLASS_TEXT);
+    builder.setView(input);
+
+    builder.setPositiveButton("OK", (dialog, which) -> {
+      String inputText = input.getText().toString();
+      textView.setText(inputText);
+
+      SharedPreferences.Editor editor = sharedPreferences.edit();
+      editor.putString(key, inputText);
+      editor.apply();
+    });
+
+    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+    builder.show();
+  }
+
+
+  public void editStartTime(View view) {
+
+
+     if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+
+    TimePickerDialog timePickerDialog = new TimePickerDialog(
+      this,
+      new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+
+          // Logic to handle the time selection
+          String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+          startTimeTextView.setText(selectedTime);
+          startTimeTextView.setTextColor(Color.BLACK);
+          startTimeTextView.setText(selectedTime);
+          startTime2TextView.setText("N/A");
+          summaryAtend1.setText(" Now set End Time for this attendance ");
+          summaryAtend1.setTextColor(Color.BLUE);
+          // Save the selected time in shared preferences
+
+          whichDay="Monday";
+
+        }
+      },
+      // Set initial time in the TimePickerDialog to the current time
+      Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+      Calendar.getInstance().get(Calendar.MINUTE),
+      true
+    );
+    timePickerDialog.show();
+  } else {
+
+      displayCurrentauto();
+
+  }
+
+}
+
+
+
+  public void editEndTime(View view) {
+    if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+
+     TimePickerDialog timePickerDialog = new TimePickerDialog(Automation.this, new TimePickerDialog.OnTimeSetListener() {
+      @Override
+      public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        // Logic to handle the time selection
+        String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+
+        startTime2TextView.setText(selectedTime); //no need
+        whichDay="Monday";
+
+
+
+
+        if (!startTimeTextView.getText().toString().isEmpty()) {
+          // Compare the times
+          try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            Date selectedDate = sdf.parse(selectedTime);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(selectedDate);
+
+
+            Date selectedDatein = sdf.parse(selectedTime);
+
+            futurendTime1 = sdf.format(selectedDatein);
+
+
+            calendar.add(Calendar.MINUTE, 10); // Adding 10 minutes
+            Date updatedSelectedDate = calendar.getTime();
+            String updatedSelectedTimeString = sdf.format(updatedSelectedDate);
+
+            updatedSelectedTime1 =updatedSelectedTimeString;
+
+            Date savedDate = sdf.parse(startTimeTextView.getText().toString());
+
+            if (savedDate.after(updatedSelectedDate)) {
+              // Calculate the time difference
+              long timeDiffInMillis = savedDate.getTime() - updatedSelectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Show the error alert with the time difference
+
+              showErrorAlert("Bad Selection  ", "Error: \n\n " + selectedTime + " has been selected before the start time (" + startTimeTextView.getText().toString() + "). Please select a time after the mentioned start time.");
+
+              startTime2TextView.setTextColor(Color.RED);
+              summaryAtend1.setText("Correct End Time please");
+
+            }
+            else {
+
+              long timeDiffInMillis = savedDate.getTime() - selectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Set the selected time if it's valid
+
+              SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck1", Context.MODE_PRIVATE);
+              boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus1", true);
+              if (isDisabled) {
+                // Alert dialog for disabled status
+                AlertDialog.Builder builder = new AlertDialog.Builder(Automation.this);
+                builder.setTitle("Disabled Status Alert")
+                  .setMessage("The attendance 1 for Monday  is currently disabled. Please enable it first.")
+                  .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                      // Do something on OK click if needed
+                    }
+                  })
+                  .show();
+              }else {
+
+
+                timeDifference1 = timeDifference;
+                startTime2TextView.setText(selectedTime);
+                startTime2TextView.setTextColor(Color.BLACK);
+
+
+                String message = "Mondays Attendance 1  is enabled and will last for " + timeDifference + " minutes.  actually it will end "+updatedSelectedTime1+"    We will utilize the additional ten minutes to send SMS to absent members.";
+                summaryAtend1.setText(message);
+
+              }
+            }
+          } catch (ParseException e) {
+            e.printStackTrace();
+          }
+        } else {
+          // Set the selected time if there is no saved time
+          startTime2TextView.setText(selectedTime);
+          startTime2TextView.setTextColor(Color.BLACK);
+
+
+
+
+
+        }
+      }
+    }, 9, 0, true); // Set initial time in the time picker
+    timePickerDialog.show();
+    } else {
+
+      displayCurrentauto();
+
+    }
+
+  }
+
+
+
+   // second group
+
+
+
+  public void editStartTime2(View view) {
+
+    if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+    TimePickerDialog timePickerDialog = new TimePickerDialog(
+      this,
+      new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+          // Logic to handle the time selection
+          String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+          startTimeTextView2.setText(selectedTime);
+          startTimeTextView2.setTextColor(Color.BLACK);
+          startTimeTextView2.setText(selectedTime);
+          startTime2TextView2.setText("N/A");
+          summaryAtend2.setText(" Now set End Time for this attendance ");
+          summaryAtend2.setTextColor(Color.BLUE);
+          // Save the selected time in shared preferences
+          whichDay="Monday";
+
+        }
+      },
+      // Set initial time in the TimePickerDialog to the current time
+      Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+      Calendar.getInstance().get(Calendar.MINUTE),
+      true
+    );
+    timePickerDialog.show();
+    } else {
+
+      displayCurrentauto();
+
+    }
+
+  }
+
+
+
+  public void editEndTime2(View view) {
+
+      if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+      TimePickerDialog timePickerDialog = new TimePickerDialog(Automation.this, new TimePickerDialog.OnTimeSetListener() {
+      @Override
+      public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        // Logic to handle the time selection
+        String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+
+        startTime2TextView2.setText(selectedTime); //no need
+        whichDay="Monday";
+
+
+
+
+        if (!startTimeTextView2.getText().toString().isEmpty()) {
+          // Compare the times
+          try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            Date selectedDate = sdf.parse(selectedTime);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(selectedDate);
+
+
+            Date selectedDatein = sdf.parse(selectedTime);
+
+            futurendTime2 = sdf.format(selectedDatein);
+
+
+            calendar.add(Calendar.MINUTE, 10); // Adding 10 minutes
+            Date updatedSelectedDate = calendar.getTime();
+            String updatedSelectedTimeString = sdf.format(updatedSelectedDate);
+
+            updatedSelectedTime2 =updatedSelectedTimeString;
+
+            Date savedDate = sdf.parse(startTimeTextView2.getText().toString());
+
+            if (savedDate.after(updatedSelectedDate)) {
+              // Calculate the time difference
+              long timeDiffInMillis = savedDate.getTime() - updatedSelectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Show the error alert with the time difference
+
+              showErrorAlert("Bad Selection  ", "Error: \n\n " + selectedTime + " has been selected before the start time (" + startTimeTextView2.getText().toString() + "). Please select a time after the mentioned start time.");
+
+              startTime2TextView2.setTextColor(Color.RED);
+              summaryAtend2.setText("correct End Time please");
+
+            }
+            else {
+
+              long timeDiffInMillis = savedDate.getTime() - selectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Set the selected time if it's valid
+
+              SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck2", Context.MODE_PRIVATE);
+              boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus2", true);
+              if (isDisabled) {
+                // Alert dialog for disabled status
+                AlertDialog.Builder builder = new AlertDialog.Builder(Automation.this);
+                builder.setTitle("Disabled Status Alert")
+                  .setMessage("The attendance 2 for Monday  is currently disabled. Please enable it first.")
+                  .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                      // Do something on OK click if needed
+                    }
+                  })
+                  .show();
+              }else {
+
+
+                timeDifference2 = timeDifference;
+                startTime2TextView2.setText(selectedTime);
+                startTime2TextView2.setTextColor(Color.BLACK);
+
+                String message = "Mondays Attendance 2 is enabled and will last for " + timeDifference + " minutes.  actually it will end on "+updatedSelectedTime2+" We will utilize the additional ten minutes to send SMS to absent members.";
+                summaryAtend2.setText(message);
+
+              }
+            }
+          } catch (ParseException e) {
+            e.printStackTrace();
+          }
+        } else {
+          // Set the selected time if there is no saved time
+          startTime2TextView2.setText(selectedTime);
+          startTime2TextView2.setTextColor(Color.BLACK);
+
+
+
+
+
+        }
+      }
+    }, 9, 0, true); // Set initial time in the time picker
+    timePickerDialog.show();
+
+
+      } else {
+
+        displayCurrentauto();
+
+      }
+
+  }
+  /// group 3
+
+
+  public void editStartTime3(View view) {
+
+      if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+
+    TimePickerDialog timePickerDialog = new TimePickerDialog(
+      this,
+      new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+          // Logic to handle the time selection
+          String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+          startTimeTextView3.setText(selectedTime);
+          startTimeTextView3.setTextColor(Color.BLACK);
+          startTimeTextView3.setText(selectedTime);
+          startTime2TextView3.setText("N/A");
+          summaryAtend3.setText(" Now set End Time for this attendance ");
+          summaryAtend3.setTextColor(Color.BLUE);
+          whichDay="Monday";
+          // Save the selected time in shared preferences
+
+        }
+      },
+      // Set initial time in the TimePickerDialog to the current time
+      Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+      Calendar.getInstance().get(Calendar.MINUTE),
+      true
+    );
+    timePickerDialog.show();
+      } else {
+
+        displayCurrentauto();
+
+      }
+
+  }
+
+
+  public void editEndTime3(View view) {
+
+        if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(Automation.this, new TimePickerDialog.OnTimeSetListener() {
+      @Override
+      public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        // Logic to handle the time selection
+        String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+
+        startTime2TextView3.setText(selectedTime); //no need
+        whichDay="Monday";
+
+
+
+
+        if (!startTimeTextView3.getText().toString().isEmpty()) {
+          // Compare the times
+          try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            Date selectedDate = sdf.parse(selectedTime);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(selectedDate);
+
+
+            Date selectedDatein = sdf.parse(selectedTime);
+
+            futurendTime3 = sdf.format(selectedDatein);
+
+
+            calendar.add(Calendar.MINUTE, 10); // Adding 10 minutes
+            Date updatedSelectedDate = calendar.getTime();
+            String updatedSelectedTimeString = sdf.format(updatedSelectedDate);
+
+            updatedSelectedTime3 =updatedSelectedTimeString;
+
+            Date savedDate = sdf.parse(startTimeTextView3.getText().toString());
+
+            if (savedDate.after(updatedSelectedDate)) {
+              // Calculate the time difference
+              long timeDiffInMillis = savedDate.getTime() - updatedSelectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Show the error alert with the time difference
+
+              showErrorAlert("Bad Selection  ", "Error: \n\n " + selectedTime + " has been selected before the start time (" + startTimeTextView3.getText().toString() + "). Please select a time after the mentioned start time.");
+
+              startTime2TextView3.setTextColor(Color.RED);
+              summaryAtend3.setText("correct End Time please");
+
+            }
+            else {
+
+              long timeDiffInMillis = savedDate.getTime() - selectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Set the selected time if it's valid
+
+              SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck3", Context.MODE_PRIVATE);
+              boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus3", true);
+              if (isDisabled) {
+                // Alert dialog for disabled status
+                AlertDialog.Builder builder = new AlertDialog.Builder(Automation.this);
+                builder.setTitle("Disabled Status Alert")
+                  .setMessage("The attendance 3 for Monday  is currently disabled. Please enable it first.")
+                  .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                      // Do something on OK click if needed
+                    }
+                  })
+                  .show();
+              }else {
+
+
+                timeDifference3 = timeDifference;
+                startTime2TextView3.setText(selectedTime);
+                startTime2TextView3.setTextColor(Color.BLACK);
+
+                String message = "Mondays Attendance 3 is enabled and will last for " + timeDifference + " minutes.  actually it will end  on:  "+updatedSelectedTime3+" We will utilize the additional ten minutes to send SMS to absent members.";
+                summaryAtend3.setText(message);
+
+              }
+            }
+          } catch (ParseException e) {
+            e.printStackTrace();
+          }
+        } else {
+          // Set the selected time if there is no saved time
+          startTime2TextView3.setText(selectedTime);
+          startTime2TextView3.setTextColor(Color.BLACK);
+
+
+
+        }
+      }
+    }, 9, 0, true); // Set initial time in the time picker
+    timePickerDialog.show();
+
+        } else {
+
+          displayCurrentauto();
+
+        }
+
+  }
+
+  // group 4
+
+
+  public void editStartTime4(View view) {
+
+
+        if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+    TimePickerDialog timePickerDialog = new TimePickerDialog(
+      this,
+      new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+          // Logic to handle the time selection
+          String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+          startTimeTextView4.setText(selectedTime);
+          startTimeTextView4.setTextColor(Color.BLACK);
+          startTimeTextView4.setText(selectedTime);
+          startTime2TextView4.setText("N/A");
+          summaryAtend4.setText(" Now set End Time for this attendance ");
+          summaryAtend4.setTextColor(Color.BLUE);
+
+          whichDay="Monday";
+          // Save the selected time in shared preferences
+
+        }
+      },
+      // Set initial time in the TimePickerDialog to the current time
+      Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+      Calendar.getInstance().get(Calendar.MINUTE),
+      true
+    );
+    timePickerDialog.show();
+        } else {
+
+          displayCurrentauto();
+
+        }
+
+  }
+
+
+
+  public void editEndTime4(View view) {
+
+
+          if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+    TimePickerDialog timePickerDialog = new TimePickerDialog(Automation.this, new TimePickerDialog.OnTimeSetListener() {
+      @Override
+      public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        // Logic to handle the time selection
+        String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+
+        startTime2TextView4.setText(selectedTime); //no need
+        whichDay="Monday";
+
+
+
+
+        if (!startTimeTextView4.getText().toString().isEmpty()) {
+          // Compare the times
+          try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            Date selectedDate = sdf.parse(selectedTime);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(selectedDate);
+
+
+            Date selectedDatein = sdf.parse(selectedTime);
+
+            futurendTime4 = sdf.format(selectedDatein);
+
+
+            calendar.add(Calendar.MINUTE, 10); // Adding 10 minutes
+            Date updatedSelectedDate = calendar.getTime();
+            String updatedSelectedTimeString = sdf.format(updatedSelectedDate);
+
+            updatedSelectedTime4 =updatedSelectedTimeString;
+
+            Date savedDate = sdf.parse(startTimeTextView4.getText().toString());
+
+            if (savedDate.after(updatedSelectedDate)) {
+              // Calculate the time difference
+              long timeDiffInMillis = savedDate.getTime() - updatedSelectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Show the error alert with the time difference
+
+              showErrorAlert("Bad Selection  ", "Error: \n\n " + selectedTime + " has been selected before the start time (" + startTimeTextView4.getText().toString() + "). Please select a time after the mentioned start time.");
+
+              startTime2TextView4.setTextColor(Color.RED);
+              summaryAtend4.setText("correct End Time please");
+
+            }
+            else {
+
+              long timeDiffInMillis = savedDate.getTime() - selectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Set the selected time if it's valid
+
+              SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck4", Context.MODE_PRIVATE);
+              boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus4", true);
+              if (isDisabled) {
+                // Alert dialog for disabled status
+                AlertDialog.Builder builder = new AlertDialog.Builder(Automation.this);
+                builder.setTitle("Disabled Status Alert")
+                  .setMessage("The attendance 4 for Monday  is currently disabled. Please enable it first.")
+                  .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                      // Do something on OK click if needed
+                    }
+                  })
+                  .show();
+              }else {
+
+
+                timeDifference4 = timeDifference;
+                startTime2TextView4.setText(selectedTime);
+                startTime2TextView4.setTextColor(Color.BLACK);
+
+                String message = "Mondays Attendance 4 is enabled and will last for " + timeDifference + " minutes.  actually it will end on "+updatedSelectedTime4+" We will utilize the additional ten minutes to send SMS to absent members.";
+                summaryAtend4.setText(message);
+
+              }
+            }
+          } catch (ParseException e) {
+            e.printStackTrace();
+          }
+        } else {
+          // Set the selected time if there is no saved time
+          startTime2TextView4.setText(selectedTime);
+          startTime2TextView4.setTextColor(Color.BLACK);
+
+
+
+        }
+      }
+    }, 9, 0, true); // Set initial time in the time picker
+    timePickerDialog.show();
+
+
+          } else {
+
+            displayCurrentauto();
+
+          }
+
+  }
+
+
+// group 5
+
+  public void editStartTime5(View view) {
+
+          if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+
+    TimePickerDialog timePickerDialog = new TimePickerDialog(
+      this,
+      new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+          // Logic to handle the time selection
+          String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+          startTimeTextView5.setText(selectedTime);
+          startTimeTextView5.setTextColor(Color.BLACK);
+          startTimeTextView5.setText(selectedTime);
+          startTime2TextView5.setText("N/A");
+          summaryAtend5.setText(" Now set End Time for this attendance ");
+          summaryAtend5.setTextColor(Color.BLUE);
+
+          whichDay="Monday";
+          // Save the selected time in shared preferences
+
+        }
+      },
+      // Set initial time in the TimePickerDialog to the current time
+      Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+      Calendar.getInstance().get(Calendar.MINUTE),
+      true
+    );
+    timePickerDialog.show();
+          } else {
+
+            displayCurrentauto();
+
+          }
+
+  }
+
+
+
+
+  public void editEndTime5(View view) {
+
+
+    if(whichDay.contains("whichDay")||whichDay.contains("Monday")) {
+
+     TimePickerDialog timePickerDialog = new TimePickerDialog(Automation.this, new TimePickerDialog.OnTimeSetListener() {
+      @Override
+      public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        // Logic to handle the time selection
+        String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+
+
+        startTime2TextView5.setText(selectedTime); //no need
+
+        whichDay="Monday";
+
+
+
+
+        if (!startTimeTextView5.getText().toString().isEmpty()) {
+          // Compare the times
+          try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            Date selectedDate = sdf.parse(selectedTime);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(selectedDate);
+
+
+            Date selectedDatein = sdf.parse(selectedTime);
+
+            futurendTime5 = sdf.format(selectedDatein);
+
+
+            calendar.add(Calendar.MINUTE, 10); // Adding 10 minutes
+            Date updatedSelectedDate = calendar.getTime();
+            String updatedSelectedTimeString = sdf.format(updatedSelectedDate);
+
+            updatedSelectedTime5 =updatedSelectedTimeString;
+
+            Date savedDate = sdf.parse(startTimeTextView5.getText().toString());
+
+            if (savedDate.after(updatedSelectedDate)) {
+              // Calculate the time difference
+              long timeDiffInMillis = savedDate.getTime() - updatedSelectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Show the error alert with the time difference
+
+              showErrorAlert("Bad Selection  ", "Error: \n\n " + selectedTime + " has been selected before the start time (" + startTimeTextView5.getText().toString() + "). Please select a time after the mentioned start time.");
+
+              startTime2TextView5.setTextColor(Color.RED);
+              summaryAtend5.setText("correct End Time please");
+
+            }
+            else {
+
+              long timeDiffInMillis = savedDate.getTime() - selectedDate.getTime();
+              long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffInMillis);
+              String timeDifference = String.format(Locale.getDefault(), "%d minutes", Math.abs(minutes));
+              // Set the selected time if it's valid
+
+              SharedPreferences sharedPreferencesCheck = getSharedPreferences("MyPrefcheck5", Context.MODE_PRIVATE);
+              boolean isDisabled = sharedPreferencesCheck.getBoolean("disabledStatus5", true);
+              if (isDisabled) {
+                // Alert dialog for disabled status
+                AlertDialog.Builder builder = new AlertDialog.Builder(Automation.this);
+                builder.setTitle("Disabled Status Alert")
+                  .setMessage("The attendance 5 for Monday  is currently disabled. Please enable it first.")
+                  .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                      // Do something on OK click if needed
+                    }
+                  })
+                  .show();
+              }else {
+
+
+                timeDifference5 = timeDifference;
+                startTime2TextView5.setText(selectedTime);
+                startTime2TextView5.setTextColor(Color.BLACK);
+
+                String message = "Mondays Attendance 5 is enabled and will last for " + timeDifference + " minutes.  actually it will end on "+updatedSelectedTime5+" We will utilize the additional ten minutes to send SMS to absent members.";
+                summaryAtend5.setText(message);
+
+              }
+            }
+          } catch (ParseException e) {
+            e.printStackTrace();
+          }
+        } else {
+          // Set the selected time if there is no saved time
+          startTime2TextView5.setText(selectedTime);
+          startTime2TextView5.setTextColor(Color.BLACK);
+
+
+
+        }
+      }
+    }, 9, 0, true); // Set initial time in the time picker
+    timePickerDialog.show();
+
+    } else {
+
+      displayCurrentauto();
+
+    }
+
+          }
+
+
+  private void showErrorAlert(String message, String timeDifference) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setMessage(message  + timeDifference)
+      .setCancelable(true)
+      .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int id) {
+          dialog.dismiss();
+        }
+      });
+    AlertDialog alert = builder.create();
+    builder.setCancelable(false);
+    alert.show();
+  }
+
+
+  private void  confimMondays() {
+
+
+    SharedPreferences sharedPreferences = getSharedPreferences("Myprefst1", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorst1 = sharedPreferences.edit();
+    editorst1.putString("stTime1", startTimeTextView.getText().toString());
+    editorst1.apply();
+
+    // get value from this and set to   startTimeTextView
+
+
+    SharedPreferences sharedPreferences2 = getSharedPreferences("Myprefst2", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorst2 = sharedPreferences2.edit();
+    editorst2.putString("stTime2", startTimeTextView2.getText().toString());
+    editorst2.apply();
+
+    // get value from this and set  to   startTimeTextView2
+    SharedPreferences sharedPreferences3 = getSharedPreferences("Myprefst3", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorst3 = sharedPreferences3.edit();
+    editorst3.putString("stTime3", startTimeTextView3.getText().toString());
+    editorst3.apply();
+    // get value from this and set  to   startTimeTextView3
+
+    SharedPreferences sharedPreferences4 = getSharedPreferences("Myprefst4", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorst4 = sharedPreferences4.edit();
+    editorst4.putString("stTime4", startTimeTextView4.getText().toString());
+    editorst4.apply();
+
+    // get value from this and set  to   startTimeTextView5
+
+    SharedPreferences sharedPreferences5 = getSharedPreferences("Myprefst5", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorst5 = sharedPreferences5.edit();
+    editorst5.putString("stTime5", startTimeTextView5.getText().toString());
+    editorst5.apply();
+
+    // get value from this and set  to   startTimeTextView5
+
+
+
+
+    SharedPreferences sharedPreferencesendinf = getSharedPreferences("MyPrefEndinfo1", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorinfo = sharedPreferencesendinf.edit();
+    editorinfo.putString("updatedSelectedinfo1",futurendTime1);
+    editorinfo.apply();
+
+
+    SharedPreferences sharedPreferencesendinf2 = getSharedPreferences("MyPrefEndinfo2", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorinfo2 = sharedPreferencesendinf2.edit();
+    editorinfo2.putString("updatedSelectedinfo2",futurendTime2);
+    editorinfo2.apply();
+
+
+
+    SharedPreferences sharedPreferencesendinf3 = getSharedPreferences("MyPrefEndinfo3", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorinfo3 = sharedPreferencesendinf3.edit();
+    editorinfo3.putString("updatedSelectedinfo3",futurendTime3);
+    editorinfo3.apply();
+
+
+    SharedPreferences sharedPreferencesendinf4 = getSharedPreferences("MyPrefEndinfo4", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorinfo4 = sharedPreferencesendinf4.edit();
+    editorinfo4.putString("updatedSelectedinfo4",futurendTime4);
+    editorinfo4.apply();
+
+
+
+
+    SharedPreferences sharedPreferencesendinf5 = getSharedPreferences("MyPrefEndinfo5", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editorinfo5 = sharedPreferencesendinf5.edit();
+    editorinfo5.putString("updatedSelectedinfo5",futurendTime5);
+    editorinfo5.apply();
+
+
+
+
+    SharedPreferences sharedPreferencesend = getSharedPreferences("MyPrefEnd1", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor1 = sharedPreferencesend.edit();
+    editor1.putString("updatedSelectedTime1", updatedSelectedTime1);
+    editor1.apply();
+
+
+    SharedPreferences sharedPreferencesend2 = getSharedPreferences("MyPrefEnd2", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor2 = sharedPreferencesend2.edit();
+    editor2.putString("updatedSelectedTime2", updatedSelectedTime2);
+    editor2.apply();
+
+
+    SharedPreferences sharedPreferencesend3 = getSharedPreferences("MyPrefEnd3", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor3 = sharedPreferencesend3.edit();
+    editor3.putString("updatedSelectedTime3", updatedSelectedTime3);
+    editor3.apply();
+
+
+    SharedPreferences sharedPreferencesend4 = getSharedPreferences("MyPrefEnd4", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor4 = sharedPreferencesend4.edit();
+    editor4.putString("updatedSelectedTime4", updatedSelectedTime4);
+    editor4.apply();
+
+
+    SharedPreferences sharedPreferencesend5 = getSharedPreferences("MyPrefEnd5", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor5 = sharedPreferencesend5.edit();
+    editor5.putString("updatedSelectedTime5", updatedSelectedTime5);
+    editor5.apply();
+
+
+
+
+
+    SharedPreferences sharedPreferencesdif = getSharedPreferences("Prefdif1", MODE_PRIVATE);
+    SharedPreferences.Editor myEdit = sharedPreferencesdif.edit();
+    myEdit.putString("timeDifference1", timeDifference1);
+    myEdit.apply();
+
+
+    SharedPreferences sharedPreferencesdif2 = getSharedPreferences("Prefdif2", MODE_PRIVATE);
+    SharedPreferences.Editor myEdit2 = sharedPreferencesdif2.edit();
+    myEdit2.putString("timeDifference2", timeDifference2);
+    myEdit2.apply();
+
+
+    SharedPreferences sharedPreferencesdif3 = getSharedPreferences("Prefdif3", MODE_PRIVATE);
+    SharedPreferences.Editor myEdit3 = sharedPreferencesdif3.edit();
+    myEdit3.putString("timeDifference3", timeDifference3);
+    myEdit3.apply();
+
+
+    SharedPreferences sharedPreferencesdif4 = getSharedPreferences("Prefdif4", MODE_PRIVATE);
+    SharedPreferences.Editor myEdit4 = sharedPreferencesdif4.edit();
+    myEdit4.putString("timeDifference4", timeDifference4);
+    myEdit4.apply();
+
+
+    SharedPreferences sharedPreferencesdif5 = getSharedPreferences("Prefdif5", MODE_PRIVATE);
+    SharedPreferences.Editor myEdit5 = sharedPreferencesdif5.edit();
+    myEdit5.putString("timeDifference5", timeDifference5);
+    myEdit5.apply();
+
+
+
+  }
+
+  private void compareMondaySettings() {
+
+
+    String startTime1 = startTimeTextView.getText().toString();
+    String startTime2 = startTimeTextView2.getText().toString();
+    String startTime3 = startTimeTextView3.getText().toString();
+    String startTime4 = startTimeTextView4.getText().toString();
+    String startTime5 = startTimeTextView5.getText().toString();
+
+
+
+
+
+    String auto1 = "Unknown";
+    String auto2 = "Unknown";
+    String auto3 = "Unknown";
+    String auto4 = "Unknown";
+    String auto5 = "Unknown";
+
+    SharedPreferences sharedPreferencesCheck1 = getSharedPreferences("MyPrefcheck1", Context.MODE_PRIVATE);
+    boolean isDisabled1 = sharedPreferencesCheck1.getBoolean("disabledStatus1", true);
+    if (isDisabled1) {
+      auto1 = "High";
+    } else {
+      auto1 = "Low";
+    }
+
+    SharedPreferences sharedPreferencesCheck2 = getSharedPreferences("MyPrefcheck2", Context.MODE_PRIVATE);
+    boolean isDisabled2 = sharedPreferencesCheck2.getBoolean("disabledStatus2", true);
+    if (isDisabled2) {
+      auto2 = "High";
+    } else {
+      auto2 = "Low";
+    }
+
+    SharedPreferences sharedPreferencesCheck3 = getSharedPreferences("MyPrefcheck3", Context.MODE_PRIVATE);
+    boolean isDisabled3 = sharedPreferencesCheck3.getBoolean("disabledStatus3", true);
+    if (isDisabled3) {
+      auto3 = "High";
+    } else {
+      auto3 = "Low";
+    }
+
+    SharedPreferences sharedPreferencesCheck4 = getSharedPreferences("MyPrefcheck4", Context.MODE_PRIVATE);
+    boolean isDisabled4 = sharedPreferencesCheck4.getBoolean("disabledStatus4", true);
+    if (isDisabled4) {
+      auto4 = "High";
+    } else {
+      auto4 = "Low";
+    }
+
+    SharedPreferences sharedPreferencesCheck5 = getSharedPreferences("MyPrefcheck5", Context.MODE_PRIVATE);
+    boolean isDisabled5 = sharedPreferencesCheck5.getBoolean("disabledStatus5", true);
+    if (isDisabled5) {
+      auto5 = "High";
+    } else {
+      auto5 = "Low";
+    }
+
+    if (auto1.equals("Low") && auto2.equals("Low") && auto3.equals("Low") && auto4.equals("Low") && auto5.equals("Low")) {
+      Toast.makeText(getApplicationContext(), "Case 5: auto1 and auto2 and auto3 and auto4 and auto5 are High", Toast.LENGTH_SHORT).show();
+
+
+      if(startTime1.compareTo(updatedSelectedTime1) < 0 &&
+        updatedSelectedTime1.compareTo(startTime2) < 0 &&
+        startTime2.compareTo(updatedSelectedTime2) < 0 &&
+        updatedSelectedTime2.compareTo(startTime3) < 0 &&
+        startTime3.compareTo(updatedSelectedTime3) < 0 &&
+        updatedSelectedTime3.compareTo(startTime4) < 0 &&
+        startTime4.compareTo(updatedSelectedTime4) < 0 &&
+        updatedSelectedTime4.compareTo(startTime5) < 0 &&
+        startTime5.compareTo(updatedSelectedTime5) < 0) {
+
+        disbleButonMonday();
+
+      } else {
+
+        warnigautomationorder();
+
+      }
+
+    } else if (auto1.equals("Low") && auto2.equals("Low") && auto3.equals("Low") && auto4.equals("Low") && auto5.equals("High")) {
+      Toast.makeText(getApplicationContext(), "Case 4: auto1 and auto2 and auto3 and auto4 are Low others are High", Toast.LENGTH_SHORT).show();
+
+      if(startTime1.compareTo(updatedSelectedTime1) < 0 &&
+        updatedSelectedTime1.compareTo(startTime2) < 0 &&
+        startTime2.compareTo(updatedSelectedTime2) < 0 &&
+        updatedSelectedTime2.compareTo(startTime3) < 0 &&
+        startTime3.compareTo(updatedSelectedTime3) < 0 &&
+        updatedSelectedTime3.compareTo(startTime4) < 0 &&
+        startTime4.compareTo(updatedSelectedTime4) <0)
+      {
+
+        disbleButonMonday();
+
+      } else {
+
+        warnigautomationorder();
+
+      }
+
+
+    } else if (auto1.equals("Low") && auto2.equals("Low") && auto3.equals("Low") && auto4.equals("High") && auto5.equals("High")) {
+      Toast.makeText(getApplicationContext(), "Case 3: auto1 and auto2 and auto3 are Low other are High", Toast.LENGTH_SHORT).show();
+
+      if(startTime1.compareTo(updatedSelectedTime1) < 0 &&
+        updatedSelectedTime1.compareTo(startTime2) < 0 &&
+        startTime2.compareTo(updatedSelectedTime2) < 0 &&
+        updatedSelectedTime2.compareTo(startTime3) < 0 &&
+        startTime3.compareTo(updatedSelectedTime3) < 0 )
+
+      {
+        disbleButonMonday();
+
+      } else {
+
+        warnigautomationorder();
+      }
+
+    } else if (auto1.equals("Low") && auto2.equals("Low") && auto3.equals("High") && auto4.equals("High") && auto5.equals("High")) {
+      Toast.makeText(getApplicationContext(), "Case 2: auto1 and auto2 are Low other are High", Toast.LENGTH_SHORT).show();
+
+      if(startTime1.compareTo(updatedSelectedTime1) < 0 &&
+        updatedSelectedTime1.compareTo(startTime2) < 0 &&
+        startTime2.compareTo(updatedSelectedTime2) < 0 )
+
+
+      {
+
+        disbleButonMonday();
+
+      } else {
+
+        warnigautomationorder();
+
+      }
+
+    } else if (auto1.equals("Low") && auto2.equals("High") && auto3.equals("High") && auto4.equals("High") && auto5.equals("High")) {
+      Toast.makeText(getApplicationContext(), "Case 1: auto1 is Low others are High", Toast.LENGTH_SHORT).show();
+
+      if(startTime1.compareTo(updatedSelectedTime1) < 0 )
+
+
+      {
+        disbleButonMonday();
+
+      } else {
+
+        warnigautomationorder();
+
+      }
+
+    } else {
+      Toast.makeText(getApplicationContext(), "Case: Any case beyond listed", Toast.LENGTH_SHORT).show();
+    }
+
+  }
+
+  private void  disbleButonMonday () {
+
+    confimMondays();
+    buttonCancel.setEnabled(false);
+    buttonSaveChange.setEnabled(false);
+    buttonApplyChange.setEnabled(false);
+    buttonCancel.setText("N.B Now Change applied");
+    autoInfomonday.setVisibility(View.VISIBLE);
+    autoInfomonday.setTextColor(Color.BLUE);
+
+
+    disabledCheckBox.setEnabled(false);
+    enableCheckBox.setEnabled(false);
+
+    disabledCheckBox2.setEnabled(false);
+    enableCheckBox2.setEnabled(false);
+    disabledCheckBox3.setEnabled(false);
+    enableCheckBox3.setEnabled(false);
+    disabledCheckBox4.setEnabled(false);
+    enableCheckBox4.setEnabled(false);
+
+    disabledCheckBox5.setEnabled(false);
+    enableCheckBox5.setEnabled(false);
+
+    editStartTime.setEnabled(false);
+    editStartTime2.setEnabled(false);
+    editStartTime3.setEnabled(false);
+    editStartTime4.setEnabled(false);
+    editStartTime5.setEnabled(false);
+
+    editEndTime.setEnabled(false);
+    editEndTime2.setEnabled(false);
+    editEndTime3.setEnabled(false);
+    editEndTime4.setEnabled(false);
+    editEndTime5.setEnabled(false);
+
+
+    whichDay="whichDay";
+
+
+  }
+
+  private  void warnigautomationorder() {
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Warning: Attendance Automation Order Issue");
+    builder.setMessage("Your attendances are not in the correct order. \n \n This can lead to automation misbehavior.\n Please note that each subsequent attendance must follow the previous one. \n \n Additionally, the starting time for each attendance should be before its end time. \n \n  Click ok  and correct you attendance automation order");
+    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int id) {
+        // Perform any action here after the user clicks OK
+      }
+    });
+
+    AlertDialog dialog = builder.create();
+    dialog.show();
+
+  }
+
+
+
+  private void showToast(String message) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+  }
+
+
+
+  private void  displayCurrentauto() {
+
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Order Is Required!");
+    builder.setMessage("You initiated the automation settings of " + whichDay + " Please finish it first.")
+      .setCancelable(false)
+      .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int id) {
+          // Perform any necessary actions here when the user clicks OK
+          dialog.dismiss(); // Dismiss the dialog
+        }
+      });
+
+    builder.setIcon(android.R.drawable.ic_dialog_info);
+    AlertDialog alert = builder.create();
+// Show the AlertDialog
+    alert.show();
+
+  }
+
+
+
+  private void showAlert(String message) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("Alert");
+    builder.setMessage(message);
+
+    // Add the buttons
+    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int id) {
+        // User clicked OK button
+      }
+    });
+
+    // Create the AlertDialog
+    AlertDialog dialog = builder.create();
+    dialog.show();
+  }
+
+
+  @Override
+  public void onBackPressed() {
+    if (exitConfirmationDialog != null && exitConfirmationDialog.isShowing()) {
+      exitConfirmationDialog.dismiss();
+    } else {
+      showExitConfirmationDialog();
+    }
+  }
+
+
+
+  private void showExitConfirmationDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+    if (whichDay.contains("whichDay")) {
+      builder.setTitle("Exit Confirmation");
+      builder.setMessage("Are you sure you want to Go BacK ");
+    }else {
+
+      builder.setTitle("Without saving ? ");
+      builder.setMessage("You have unsaved changes for " + whichDay + ". Do you really want to leave without saving these changes? ");
+
+    }
+
+    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        Intent intent = new Intent(Automation.this, MainActivityFullControl.class);
+        startActivity(intent);
+      }
+    });
+
+    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        // User clicked No, dismiss the dialog
+        dialog.dismiss();
+      }
+    });
+
+    exitConfirmationDialog = builder.create();
+    exitConfirmationDialog.show();
+  }
+
+
+}
+
